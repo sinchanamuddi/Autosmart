@@ -1,0 +1,22 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+    RewriteBase /autoSmart/
+
+    # Block direct access to application and system folders
+    RewriteRule ^(application|system|\.git) - [F,L]
+
+    # Allow actual files and directories
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Exclude static assets from routing
+    RewriteCond $1 !^(index\.php|assets|img|js|css|robots\.txt|favicon\.ico)
+
+    # Route everything else through CI front controller
+    RewriteRule ^(.*)$ index.php/$1 [L]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+    # If mod_rewrite is not available, use CI's query string mode
+    # Set $config['uri_protocol'] = 'QUERY_STRING' in config.php
+</IfModule>
